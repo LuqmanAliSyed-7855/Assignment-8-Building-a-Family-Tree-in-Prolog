@@ -1,0 +1,65 @@
+## Description:Family relationships under this implementation are defined in terms of parent-child and gender facts plus rules governing the identification of grandparents, siblings, cousins, children, and descendants. Recursion and logical inference is used to find out both direct and indirect antecedent connections including landmarks.
+ * 
+/* ===== Basic Facts ===== */
+% stating who is a parent of whom
+parent(john, mary).
+parent(john, tom).
+parent(susan, mary).
+parent(susan, tom).
+
+parent(mary, alice).
+parent(mary, bob).
+parent(paul, alice).
+parent(paul, bob).
+
+parent(tom, charlie).
+parent(linda, charlie).
+
+parent(bob, emily).
+parent(sarah, emily).
+
+% stating who is male
+male(john).
+male(tom).
+male(paul).
+male(bob).
+male(charlie).
+
+% stating who is female
+female(susan).
+female(mary).
+female(linda).
+female(sarah).
+female(alice).
+female(emily).
+
+/* ===== Derived Relationships ===== */
+
+% finding if a person is a grandparent of another
+grandparent(X, Y) :-
+    parent(X, Z),
+    parent(Z, Y).
+
+% finding if two people share the same parent but are different
+sibling(X, Y) :-
+    parent(Z, X),
+    parent(Z, Y),
+    X \= Y.
+
+% finding if two people are cousins by checking if their parents are siblings
+cousin(X, Y) :-
+    parent(P1, X),
+    parent(P2, Y),
+    sibling(P1, P2),
+    X \= Y.
+
+% finding the children of a given person
+child(X, Y) :-
+    parent(X, Y).
+
+% finding all descendants of a person including through multiple generations
+descendant(X, Y) :-
+    parent(X, Y).
+descendant(X, Y) :-
+    parent(X, Z),
+    descendant(Z, Y).
